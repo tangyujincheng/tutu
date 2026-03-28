@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兔兔拼字母 - Bunny Letter Game</title>
+    <link rel="stylesheet" href="game-style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🐰 兔兔拼字母</h1>
+        <p class="subtitle">拼出单词，看看兔兔能不能猜对！</p>
+        
+        <div class="game-area">
+            <div class="preview-section">
+                <h3>当前单词</h3>
+                <div id="letter-preview" class="preview-container"></div>
+            </div>
+            
+            <div class="tiles-section">
+                <h3>可选字母</h3>
+                <div id="letter-tiles" class="tiles-container"></div>
+            </div>
+            
+            <div class="controls">
+                <button id="clear-btn" class="btn">清空</button>
+                <button id="guess-btn" class="btn primary">让兔兔猜!</button>
+            </div>
+            
+            <div class="result-section">
+                <h3>兔兔的猜测</h3>
+                <div id="guess-result" class="result-container"></div>
+            </div>
+        </div>
+
+        <div class="nav-footer">
+            <a href="./">← 返回兔兔信件小屋</a>
+        </div>
+    </div>
+
+    <script src="game-script.js"></script>
+</body>
+</html>

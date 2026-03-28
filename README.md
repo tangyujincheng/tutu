@@ -1,23 +1,101 @@
-# 兔兔信件小屋 💌
+# 兔兔信件小屋 - Bunny Letter Game
 
-一个温暖治愈的 H5 小游戏，在这里你可以收到小兔子的来信，也可以给小兔子回信。
+一个可爱的AI兔兔写信互动应用，主人给兔兔写信，兔兔会用AI自动回信。
 
 ## 功能特性
 
-- ✨ 治愈温暖漫画风格
-- 📨 小兔子会给你发送可爱治愈的信件
-- ✍️ 可以给小兔子写回信
-- 🐰 收到回信后小兔子会开心摇尾巴并在房间里跑来跑去
-- 📱 完美适配移动端，可嵌入微信/抖音
+- ✨ 主人给小兔子写信，AI自动生成回信
+- 🔔 未读回信小红点提示
+- ⏰ 超过2小时主人不写信，小兔子会主动发信
+- 🔒 AI配置安全存储，API密钥不会暴露到前端
+- ⚙️ 独立后台配置页面，可修改AI提示词和配置
 
-## 技术栈
+## 技术架构
 
-纯 HTML/CSS/JavaScript，无需构建，直接部署即可。
+- **后端**：Node.js + Express + Prisma ORM
+- **数据库**：SQLite（轻量，适合单用户场景）
+- **前端**：原生JavaScript + CSS
+- **AI**：火山方舟Ark大模型API
 
-## 使用方法
+## 本地开发
 
-直接打开 `index.html` 即可运行，或部署到任何静态网页服务器。
+### 安装依赖
+```bash
+npm install
+```
 
-## 本地存储
+### 环境配置
+复制 `.env` 并修改配置：
+```
+DATABASE_URL="file:./dev.db"
+PORT=3000
+ENCRYPTION_KEY=your-encryption-key
+DEFAULT_API_URL=https://ark.cn-beijing.volces.com/api/coding/v3
+DEFAULT_API_KEY=your-api-key
+DEFAULT_MODEL_ID=ark-code-latest
+```
 
-所有信件和回复都会保存在浏览器的本地存储中，刷新页面不会丢失。
+### 初始化数据库
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+### 启动服务
+```bash
+node server.js
+```
+
+访问：
+- 前台：http://localhost:3000
+- 后台配置：http://localhost:3000/admin
+
+## 部署
+
+### 使用PM2部署
+```bash
+pm2 start ecosystem.config.js
+pm2 save
+pm2 startup
+```
+
+### Nginx反向代理示例
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
+
+## 目录结构
+
+```
+bunny-letter-game/
+├── backend/
+│   ├── prisma/          # Prisma配置和数据库
+│   ├── routes/          # API路由
+│   ├── services/        # 业务服务
+│   ├── utils/           # 工具函数
+│   ├── app.js           # Express应用
+│   └── admin.html       # 后台配置页面
+├── frontend/            # 前端静态文件
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+├── server.js            # 启动入口
+├── package.json
+├── .env
+└── ecosystem.config.js  # PM2配置
+```
+
+## 安全说明
+
+- API密钥始终加密存储在后端数据库
+- 敏感API仅在后端调用，前端无法访问
+- 前端只能获取公开的提示词内容，无法获取API密钥

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兔兔信件小屋 - Bunny Letter Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="envelope">
+        <div id="bunnyContainer">
+            <img id="bunny" src="bunny.gif" alt="小兔子">
+        </div>
+        <div class="controls">
+            <div class="btn-wrapper">
+                <div id="mailBtn" class="btn">📫 信箱</div>
+                <div id="unreadBadge" class="unread-badge"></div>
+            </div>
+            <div id="writeBtn" class="btn">✍️ 写信</div>
+            <a href="game.html" class="btn">🧩 拼字母</a>
+        </div>
+    </div>
+
+    <!-- 信箱弹窗 -->
+    <div id="mailModal" class="modal">
+        <div class="modal-content">
+            <div class="close-btn" id="closeMailBtn">✕</div>
+            <h2 class="modal-title">我的信箱</h2>
+            <div id="mailContent"></div>
+        </div>
+    </div>
+
+    <!-- 写信弹窗 -->
+    <div id="writeModal" class="modal">
+        <div class="modal-content">
+            <div class="close-btn" id="closeWriteBtn">✕</div>
+            <h2 class="modal-title">给兔兔写信</h2>
+            <textarea id="replyInput" placeholder="写下想对兔兔说的话..."></textarea>
+            <button id="sendBtn">发送</button>
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div id="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
