@@ -76,6 +76,24 @@ router.post('/', async (req, res) => {
   }
 });
 
+// POST /api/letters/generate - 直接生成测试回信（不保存到数据库）
+router.post('/generate', async (req, res) => {
+  try {
+    const { content } = req.body;
+    if (!content || content.trim().length === 0) {
+      return res.status(400).json({ success: false, error: 'Content is required' });
+    }
+
+    // 只生成AI回信，不保存
+    const aiReply = await generateReply(content.trim());
+    logger.info('Test AI reply generated successfully');
+    res.json({ success: true, response: aiReply });
+  } catch (error) {
+    logger.error('Failed to generate test reply', error);
+    res.status(500).json({ success: false, error: 'Failed to generate reply: ' + error.message });
+  }
+});
+
 // GET /api/letters/unread-count - 获取未读数量
 router.get('/unread-count', async (req, res) => {
   try {

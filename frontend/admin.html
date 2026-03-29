@@ -128,6 +128,9 @@
             padding-bottom: 8px;
             border-bottom: 1px solid #e5e7eb;
         }
+        .result-section label {
+            color: #4b5563;
+        }
     </style>
 </head>
 <body>
@@ -174,6 +177,19 @@
 
         <div id="status" class="status"></div>
 
+        <div class="section-title">🔍 测试AI回信</div>
+        <div class="form-group">
+            <label for="testInput">输入你的测试来信</label>
+            <textarea id="testInput" placeholder="在这里输入你想写给兔兔的测试内容...">今天天气真好，我出门散步看到了一朵很可爱的云☁️</textarea>
+        </div>
+        <div class="buttons">
+            <button id="testBtn" class="secondary">发送测试并查看结果</button>
+        </div>
+        <div id="testResult" class="result-section" style="display: none; margin-top: 20px;">
+            <label>AI回信结果：</label>
+            <div id="resultContent" style="margin-top: 8px; padding: 16px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb; line-height: 1.7; color: #374151; white-space: pre-wrap;"></div>
+        </div>
+
         <div class="section-title">功能说明</div>
         <ul style="margin-left: 20px; color: #6b7280; font-size: 14px; line-height: 1.8;">
             <li>API 地址、Key 和模型 ID 全部加密存储在后端数据库，前端无法访问</li>
@@ -184,14 +200,19 @@
     </div>
 
     <script>
-        const API_BASE = '';
+        // 自动适配子路径部署
+        const API_BASE = window.location.pathname.startsWith('/admin') ? '' : '/bunny-letter-game';
         const apiUrlInput = document.getElementById('apiUrl');
         const apiKeyInput = document.getElementById('apiKey');
         const modelIdInput = document.getElementById('modelId');
         const systemPromptInput = document.getElementById('systemPrompt');
         const saveBtn = document.getElementById('saveBtn');
         const triggerBtn = document.getElementById('triggerBtn');
+        const testBtn = document.getElementById('testBtn');
+        const testInput = document.getElementById('testInput');
         const statusDiv = document.getElementById('status');
+        const testResult = document.getElementById('testResult');
+        const resultContent = document.getElementById('resultContent');
 
         async function loadConfig() {
             try {
@@ -266,9 +287,36 @@
 
         saveBtn.addEventListener('click', saveConfig);
         triggerBtn.addEventListener('click', triggerBunnyLetter);
+        testBtn.addEventListener('click', runTest);
 
         // Load config on page load
         document.addEventListener('DOMContentLoaded', loadConfig);
+
+        async function runTest() {
+            testBtn.disabled = true;
+            testBtn.textContent = '生成中...';
+            try {
+                const res = await fetch(`${API_BASE}/api/letters/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: testInput.value.trim()
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    testResult.style.display = 'block';
+                    resultContent.textContent = data.response;
+                } else {
+                    showStatus('❌ 测试失败: ' + (data.error || '未知错误'), 'error');
+                }
+            } catch (error) {
+                showStatus('❌ 测试失败: ' + error.message, 'error');
+            } finally {
+                testBtn.disabled = false;
+                testBtn.textContent = '发送测试并查看结果';
+            }
+        }
     </script>
 </body>
 </html>
