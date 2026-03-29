@@ -31,6 +31,43 @@ app.get(`${BASE_PATH}/api/health/`, (req, res) => {
   res.json({ status: 'ok', message: 'Server is running', basePath: BASE_PATH });
 });
 
+// Simple AI test endpoint - standalone, no storage
+// Support both GET and POST for easy browser testing
+// Returns raw AI reply directly
+const aiService = require('./services/ai');
+const handleTestAI = async (message, res) => {
+  try {
+    if (!message) {
+      return res.status(400).send('Please provide "message" parameter (via query for GET, body for POST)');
+    }
+    const reply = await aiService.generateReply(message);
+    res.send(reply);
+  } catch (error) {
+    logger.error('AI test endpoint error', error);
+    res.status(500).send(error.message);
+  }
+};
+
+app.get(`${BASE_PATH}/api/test-ai`, async (req, res) => {
+  const message = req.query.message;
+  await handleTestAI(message, res);
+});
+
+app.post(`${BASE_PATH}/api/test-ai`, async (req, res) => {
+  const message = req.body.message;
+  await handleTestAI(message, res);
+});
+
+// Also support trailing slash
+app.get(`${BASE_PATH}/api/test-ai/`, async (req, res) => {
+  const message = req.query.message;
+  await handleTestAI(message, res);
+});
+app.post(`${BASE_PATH}/api/test-ai/`, async (req, res) => {
+  const message = req.body.message;
+  await handleTestAI(message, res);
+});
+
 // Serve frontend static files
 app.use(express.static(path.join(__dirname, '../frontend')));
 
