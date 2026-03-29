@@ -8,9 +8,9 @@ async function getAIConfig() {
   let config = await prisma.aIConfig.findFirst();
   if (!config) {
     // 使用默认配置初始化
-    const defaultApiUrl = process.env.DEFAULT_API_URL || 'https://ark.cn-beijing.volces.com/api/coding/v3';
+    const defaultApiUrl = process.env.DEFAULT_API_URL || 'https://ark.cn-beijing.volces.com/api/v3/chat/completions';
     const defaultApiKey = process.env.DEFAULT_API_KEY || '24590a27-89c2-4cb2-b302-b3355dada1d7';
-    const defaultModelId = process.env.DEFAULT_MODEL_ID || 'ark-code-latest';
+    const defaultModelId = process.env.DEFAULT_MODEL_ID || 'doubao-seed-2.0';
     const defaultPrompt = `你现在是一只可爱软萌的小兔子，住在兔兔信件小屋里。你正在和你的主人通信。
 请根据主人的来信，写一封简短可爱的回信。
 要求：

@@ -82,4 +82,7 @@ function triggerCheck() {
   return checkAndSendInitiativeLetter();
 }
 
-module.exports = { startScheduler, stopScheduler, triggerCheck };
+// 导出别名，供路由使用
+const checkAndGenerateInitiativeLetter = triggerCheck;
+
+module.exports = { startScheduler, stopScheduler, triggerCheck, checkAndGenerateInitiativeLetter };

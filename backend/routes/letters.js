@@ -121,15 +121,45 @@ router.get('/prompt-public', async (req, res) => {
   }
 });
 
-// GET /api/check-active - 检查是否需要主动发信（前端触发）
-router.get('/check-active', async (req, res) => {
+// GET/POST /api/letters/check-active - 检查是否需要主动发信（前端触发）
+router.route('/check-active')
+  .get(async (req, res) => {
   try {
     const { triggerCheck } = require('../services/scheduler');
-    await triggerCheck();
-    res.json({ success: true });
+    const generated = await triggerCheck();
+    res.json({ success: true, generated });
   } catch (error) {
     logger.error('Failed to check active', error);
     res.status(500).json({ success: false, error: 'Failed to check active' });
+  }
+})
+  .post(async (req, res) => {
+    try {
+      const { triggerCheck } = require('../services/scheduler');
+      const generated = await triggerCheck();
+      res.json({ success: true, generated });
+    } catch (error) {
+      logger.error('Failed to check active', error);
+      res.status(500).json({ success: false, error: 'Failed to check active' });
+    }
+  });
+
+// POST /api/letters/:id/read - 标记为已读（兼容前端旧写法）
+router.post('/:id/read', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = await getCurrentUserId();
+    await prisma.letter.update({
+      where: { 
+        id: parseInt(id),
+        userId
+      },
+      data: { isRead: true },
+    });
+    res.json({ success: true });
+  } catch (error) {
+    logger.error('Failed to mark as read', error);
+    res.status(500).json({ success: false, error: 'Failed to mark as read' });
   }
 });
 
